@@ -54,7 +54,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'DjangoProject6.urls'
+ROOT_URLCONF = 'DjangoProject6git add ..urls'
 
 TEMPLATES = [
     {
