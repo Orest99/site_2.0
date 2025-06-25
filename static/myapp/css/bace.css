@@ -1,0 +1,37 @@
+/* myapp/static/css/style.css */
+
+body {
+    background-color: black;/*колір фону*/
+    color: gold;
+}
+
+a {
+    color: gold;
+}
+
+a:hover,
+a:focus {
+    color: #ffd700; /* Світліший золотий при наведенні */
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: gold;
+}
+
+.jumbotron {
+    background-color: #333; /* Темно-сірий фон для джамботрона */
+    color: gold;
+}
+
+.btn-primary {
+    background-color: gold;
+    border-color: gold;
+    color: black;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+    background-color: #ffd700;
+    border-color: #ffd700;
+    color: black;
+}

@@ -1,0 +1,32 @@
+{% extends 'bace.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="container py-5">
+        <h2 class="text-center mb-4">{{ title }}</h2>
+
+        {% if works %}
+            <div class="row justify-content-center">
+                {% for work in works %}
+                    <div class="col-md-4 col-lg-3 mb-4">
+                        <div class="card product-card h-100 shadow-sm">
+                            {% if work.image %}
+                                <img src="{{ work.image.url }}" class="card-img-top" style="max-height: 250px; object-fit: cover;" alt="{{work.nazva }}">
+                            {% else %}
+                                <img src="/media/products/pngtree-white-background-png-image_6083101.jpg" class="card-img-top" style="max-height: 250px; object-fit: cover;" alt="{{ work.nazva }}">
+                            {% endif %}
+                            <div class="card-body d-flex flex-column justify-content-between align-items-center text-center">
+                               <a href="{% url 'work_detail' work.id %}">{{ work.nazva }}</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-center">Наразі немає доступних робіт.</p>
+        {% endif %}
+        <div class="text-center mt-4">
+            <a href="{% url 'home' %}" class="btn btn-secondary">Повернутися на головну</a>
+        </div>
+    </div>
+{% endblock content %}

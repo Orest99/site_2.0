@@ -1,0 +1,128 @@
+{# myapp/templates/myapp/reviews_page.html #}
+{% extends 'bace.html' %} {# Успадковуємо від вашого базового шаблону #}
+{% load static %} {# Завантажуємо static, якщо потрібні статичні файли #}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="text-center mb-4">{{ title }}</h2>
+
+    {# Виведення повідомлень користувачу (успіх/помилка) #}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    {# Форма для додавання нового відгуку (ПРОСТА HTML) #}
+    <div class="row justify-content-center mb-5">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white text-center">
+                    <h5>Залишити свій відгук</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{% url 'reviews_page' %}">
+                        {% csrf_token %} {# Захист від CSRF-атак - ЦЕ ЗАЛИШАЄМО! #}
+
+                        {# Поле Ім'я #}
+                        <div class="mb-3">
+                            <label for="author_name" class="form-label">Ім'я</label>
+                            <input type="text" class="form-control" id="author_name" name="author_name"
+                                   placeholder="Ваше ім'я (необов'язково)"
+                                   value="{{ posted_data.author_name|default_if_none:'' }}">
+                            {% if errors.author_info %} {# Відображення помилки, якщо вона є #}
+                                <div class="alert alert-danger mt-1">{{ errors.author_info }}</div>
+                            {% endif %}
+                        </div>
+
+                        {# Поле Email #}
+                        <div class="mb-3">
+                            <label for="author_email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="author_email" name="author_email"
+                                   placeholder="Ваш Email (необов'язково)"
+                                   value="{{ posted_data.author_email|default_if_none:'' }}">
+                            {% if errors.author_email %} {# Відображення помилки, якщо вона є #}
+                                <div class="alert alert-danger mt-1">{{ errors.author_email }}</div>
+                            {% endif %}
+                            {% if errors.author_info and not errors.author_email %}
+                                <div class="alert alert-danger mt-1">{{ errors.author_info }}</div>
+                            {% endif %}
+                        </div>
+
+                        {# Поле Рейтинг (використовуємо радіокнопки) #}
+                        <div class="mb-3">
+                            <label class="form-label">Оцінка</label>
+                            <div class="d-flex justify-content-around">
+                                {% for i in "12345"|make_list %}
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="rating" id="rating{{ i }}" value="{{ i }}"
+                                               {% if posted_data.rating|safe == i|stringformat:"s" %}checked{% endif %}>
+                                        <label class="form-check-label" for="rating{{ i }}">{{ i }}</label>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            {% if errors.rating %} {# Відображення помилки, якщо вона є #}
+                                <div class="alert alert-danger mt-1">{{ errors.rating }}</div>
+                            {% endif %}
+                        </div>
+
+                        {# Поле Відгук (textarea) #}
+                        <div class="mb-3">
+                            <label for="comment" class="form-label">Відгук</label>
+                            <textarea class="form-control" id="comment" name="comment" rows="4"
+                                      placeholder="Напишіть ваш відгук тут...">{{ posted_data.comment|default_if_none:'' }}</textarea>
+                            {% if errors.comment %} {# Відображення помилки, якщо вона є #}
+                                <div class="alert alert-danger mt-1">{{ errors.comment }}</div>
+                            {% endif %}
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Надіслати відгук</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    {# Список усіх відгуків (цей блок залишається без змін) #}
+    <h3 class="mb-4">Всі відгуки ({{ reviews.count }})</h3>
+    {% if reviews %}
+        <div class="list-group">
+            {% for review in reviews %}
+                <div class="list-group-item list-group-item-action flex-column align-items-start mb-3 shadow-sm">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">
+                            {% if review.author_name %}
+                                {{ review.author_name }}
+                            {% else %}
+                                Анонімний користувач
+                            {% endif %}
+                        </h5>
+                        <small class="text-muted">{{ review.created_at|date:"d M Y H:i" }}</small>
+                    </div>
+                    {% if review.product %}
+                        <small class="text-muted">Про продукт: <a href="{% url 'product_detail' pk=review.product.id %}">{{ review.product.nazva }}</a></small><br>
+                    {% endif %}
+                    <p class="mb-1">Оцінка:
+                        {# Відображення зірочок, якщо ви підключили Bootstrap Icons #}
+                        {% for i in "12345"|make_list %}
+                            {% if forloop.counter <= review.rating %}
+                                <i class="bi bi-star-fill text-warning"></i>
+                            {% else %}
+                                <i class="bi bi-star text-muted"></i>
+                            {% endif %}
+                        {% endfor %}
+                    </p>
+                    <p class="mb-1">{{ review.comment }}</p>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-center">Наразі немає жодних відгуків.</p>
+    {% endif %}
+</div>
+{% endblock %}

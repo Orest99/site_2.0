@@ -1,0 +1,94 @@
+{% extends 'bace.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="hero bg-photo py-5">
+        <div class="container text-center">
+            <h3>Зроби своє ідеальне фото!</h3>
+        </div>
+    </div>
+
+    <div class="product-grid py-4">
+        <div class="container">
+            <h3 class="text-center mb-4">Популярні фото</h3>
+            <div class="row justify-content-center">
+                {% for photo in photos %}
+                    <div class="col-md-4 col-lg-3 mb-4">
+                        <div class="card product-card h-100 shadow-sm">
+                            {% if photo.image %}
+                                <img src="{{ photo.image.url }}" class="card-img-top" style="max-height: 250px; object-fit: cover;" alt="{{ photo.nazva }}">
+                            {% else %}
+                                 <img src="/media/products/pngtree-white-background-png-image_6083101.jpg" class="card-img-top" style="max-height: 250px; object-fit: cover;" alt="{{ photo.nazva }}">
+                            {% endif %}
+                            <div class="card-body d-flex flex-column justify-content-between align-items-center text-center">
+                                <h5 class="card-title mb-2">{{ photo.nazva }}</h5>
+
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>>
+{% endblock content %}
+
+{% block header %}
+    <div class="bg-dark py-3">
+        <div class="container d-flex justify-content-between align-items-center">
+            <div class="flex-grow-1 text-center">
+                <div class="logo text-warning font-weight-bold" style="font-size: 2rem; display: inline-block;">💡FramedSoul</div>
+            </div>
+            <nav class="navigation">
+                <ul class="nav justify-content-center">
+                    {% for category in categories %}
+                        <li class="nav-item mx-2">
+                             <a class="nav-link text-white rounded"
+                                {% if category.name == 'Фото' %}
+                                    href="{% url 'photos' %}"
+                                {% else %}
+                                    href="{% url 'category_detail' category.id %}"
+                                {% endif %}
+                             >{{ category.name }}</a>
+                        </li>
+                    {% endfor %}
+                 <li class="nav-item mx-2">
+                     <a class="nav-link text-white rounded" href="{% url 'reviews_page' %}">Відгуки</a>
+                 </li>
+                  <li class="nav-item dropdown">
+                      <a class="nav-link dropdown-toggle bg-secondary text-white rounded" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                          Контакти
+                      </a>
+                      <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                          {% for contacts in contact %}
+                            {% if contacts.phone %}
+                              <li><a class="dropdown-item" href="tel:{{ contacts.phone }}">{{ contacts.phone }}</a></li>
+                            {% endif %}
+                            {% if contacts.telegram_link %}
+                              <li><a class="dropdown-item" href="{{ contacts.telegram_link }}">Telegram(особисто)</a></li>
+                            {% endif %}
+                              {% if contacts.instagram %}
+                              <li><a class="dropdown-item" href="{{ contacts.instagram }}">Інстаграм</a></li>
+                            {% endif %}
+                          {% empty %}
+                            <li><a class="dropdown-item">Контакти відсутні</a></li>
+                          {% endfor %}
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+{% endblock header %}
+
+{% block footer %}
+    <footer class="bg-dark py-3">
+        <div class="container">
+            <ul class="nav justify-content-center">
+                 <li class="nav-item"><a class="nav-link text-white">💡 FramedSoul</a>
+                 </li>
+                <li class="nav-item"><a href="https://t.me/lady_ozi" class="nav-link text-white" target="_blank" rel="noopener noreferrer">Telegram</a></li>
+                 <li class="nav-item"><a href="https://www.instagram.com/ph.yana.oz?igsh=MXZ1MjEybXdtYzhocA==" class="nav-link text-white" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+            </ul>
+        </div>
+    </footer>
+{% endblock footer %}
